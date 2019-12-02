@@ -29,10 +29,11 @@ class AsyncSocketManager: NSObject {
     let port: UInt16
     let timeout: TimeInterval
     var allowUntrustedServer: Bool
+    var isTLSEnabled: Bool
     
     let localSocketQueue = DispatchQueue(label: "com.justeat.gcdAsyncSocketDelegateQueue")
     
-    init(host: String, port: UInt16, timeout: TimeInterval, delegate: AsyncSocketManagerDelegate, logActivity: Bool, allowUntrustedServer: Bool) {
+    init(host: String, port: UInt16, timeout: TimeInterval, delegate: AsyncSocketManagerDelegate, logActivity: Bool, allowUntrustedServer: Bool, isTLSEnabled: Bool) {
         
         self.host = host
         self.port = port
@@ -40,6 +41,7 @@ class AsyncSocketManager: NSObject {
         self.delegate = delegate
         self.logActivity = logActivity
         self.allowUntrustedServer = allowUntrustedServer
+        self.isTLSEnabled = isTLSEnabled
         super.init()
         
         self.socket = GCDAsyncSocket(delegate: self, delegateQueue: localSocketQueue)
@@ -52,6 +54,9 @@ class AsyncSocketManager: NSObject {
             } catch {
                 print("🔌 <AsyncSocket>, Could not startTLS: \(error.localizedDescription)")
             }
+        }
+        guard isTLSEnabled else {
+            return
         }
         self.socket.startTLS(self.allowUntrustedServer ?
             [String(GCDAsyncSocketManuallyEvaluateTrust): NSNumber(value:true)] :
@@ -104,7 +109,7 @@ extension AsyncSocketManager {
 extension AsyncSocketManager {
     
     func isSecure() -> Bool {
-        return self.socket.isSecure
+        return !self.isTLSEnabled || self.socket.isSecure
     }
     
     func isConnected() -> Bool {
@@ -119,6 +124,9 @@ extension AsyncSocketManager: GCDAsyncSocketDelegate {
     func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         if logActivity {
             print("🔌 <AsyncSocket>, connected!")
+        }
+        if !isTLSEnabled {
+            self.socketDidSecure(sock)
         }
     }
     

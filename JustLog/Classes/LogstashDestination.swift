@@ -27,11 +27,11 @@ public class LogstashDestination: BaseDestination  {
         fatalError()
     }
     
-    public required init(host: String, port: UInt16, timeout: TimeInterval, logActivity: Bool, allowUntrustedServer: Bool = false) {
+    public required init(host: String, port: UInt16, timeout: TimeInterval, logActivity: Bool, isTLSEnabled: Bool = true, allowUntrustedServer: Bool = false) {
         super.init()
         self.logActivity = logActivity
         self.logDispatchQueue.maxConcurrentOperationCount = 1
-        self.socketManager = AsyncSocketManager(host: host, port: port, timeout: timeout, delegate: self, logActivity: logActivity, allowUntrustedServer: allowUntrustedServer)
+        self.socketManager = AsyncSocketManager(host: host, port: port, timeout: timeout, delegate: self, logActivity: logActivity, allowUntrustedServer: allowUntrustedServer, isTLSEnabled: isTLSEnabled)
     }
     
     deinit {
