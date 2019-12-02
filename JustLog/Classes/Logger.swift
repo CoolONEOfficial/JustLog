@@ -49,6 +49,8 @@ public final class Logger: NSObject {
      Default to `false`, if `true` untrusted certificates (as self-signed are) will be trusted
      */
     public var allowUntrustedServer: Bool = false
+    public var enableTLS: Bool = true
+    public var format = "$Dyyyy-MM-dd HH:mm:ss.SSS$d $T $C$L$c: $M"
 
     // logger conf
     public var defaultUserInfo: [String : Any]?
@@ -73,8 +75,6 @@ public final class Logger: NSObject {
     
     public func setup() {
         
-        let format = "$Dyyyy-MM-dd HH:mm:ss.SSS$d $T $C$L$c: $M"
-        
         // console
         if enableConsoleLogging {
             console = JustLog.ConsoleDestination()
@@ -94,7 +94,7 @@ public final class Logger: NSObject {
         
         // logstash
         if enableLogstashLogging {
-            logstash = LogstashDestination(host: logstashHost, port: logstashPort, timeout: logstashTimeout, logActivity: logLogstashSocketActivity, allowUntrustedServer: allowUntrustedServer)
+            logstash = LogstashDestination(host: logstashHost, port: logstashPort, timeout: logstashTimeout, logActivity: logLogstashSocketActivity, isTLSEnabled: enableTLS, allowUntrustedServer: allowUntrustedServer)
             logstash.logzioToken = logzioToken
             internalLogger.addDestination(logstash)
             
