@@ -19,7 +19,7 @@ let package = Package(
     targets: [
         .target(
             name: "JustLog",
-            dependencies: ["SwiftyBeaver"],
+            dependencies: ["SwiftyBeaver", "CocoaAsyncSocket"],
                 path: "JustLog/",
             exclude: ["Supporting Files/Info.plist", "Supporting Files/JustLog.h"]),
     ]
