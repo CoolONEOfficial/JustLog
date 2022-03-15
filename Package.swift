@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver", from: "1.8.3"),
-        .package(url: "https://github.com/robbiehanson/CocoaAsyncSocket", from: "7.6.5")
+        .package(url: "https://github.com/robbiehanson/CocoaAsyncSocket", from: "7.6.4")
     ],
     targets: [
         .target(
